@@ -1,5 +1,7 @@
 import pygame as pg
+import json
 from enemy import Enemy
+from world import World
 import Constants as c
 
 
@@ -14,20 +16,27 @@ screen = pg.display.set_mode((c.screen_width,c.screen_height))
 pg.display.set_caption("TDA: Tower Defence Amateur edition")
 
 #load images
+# map
+map_image = pg.image.load("levels/wmap.png").convert_alpha()
+# enemy's
 enemy_image = pg.image.load("images/Characters/1.png").convert_alpha()
 
+new_width = 100 
+new_height = 100 
+
+enemy_image_resized = pg.transform.scale(enemy_image, (new_width, new_height))
+
+# json
+with open("levels/wmap.tmj") as file:
+    world_data = json.load(file)
+
+# create world
+world = World(world_data, map_image)
+world.process_data()
 
 #create groups
 enemy_group = pg.sprite.Group()
-
-waypoints = [
-    (100,100),
-    (400,200),
-    (400,100),
-    (200,300)
-]
-
-enemy = Enemy (waypoints, enemy_image)
+enemy = Enemy (world.paths, enemy_image_resized)
 enemy_group.add(enemy)
 
 
@@ -39,8 +48,8 @@ while run:
 
     screen.fill("grey100")
 
-    #draw enemy path
-    pg.draw.lines(screen, "grey0", False, waypoints)
+    # draw world
+    world.draw(screen)
 
     #update groups
     enemy_group.update()

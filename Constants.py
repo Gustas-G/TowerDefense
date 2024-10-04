@@ -1,3 +1,6 @@
-screen_width = 500
-screen_height = 500
+rows = 15
+cols = 15
+cell_size = 64
+screen_width = cell_size * cols
+screen_height = cell_size * rows
 FPS = 60
